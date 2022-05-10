@@ -12,7 +12,7 @@ class ParserFilter(FilterSet):
                              lookup_expr='gt',
                              label='Created after',
                              widget=SelectDateWidget)
-    country = CharFilter(label='Country', lookup_expr='icontains')
+    country = ChoiceFilter(label='Country')
     
     class Meta:
         model = News

@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import News
+from .models import News, Url
 from django import forms
 
 class ParserForm(ModelForm):
@@ -12,3 +12,10 @@ class ParserForm(ModelForm):
             'create_date',
             'update_date',
             'country', 'is_dead']
+        
+class CreateForm(ModelForm):
+
+    class Meta:
+        model = Url
+        fields = ['link']
+

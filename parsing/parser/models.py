@@ -1,6 +1,12 @@
 from django.db import models
 
-
+class Url(models.Model):
+    link = models.URLField(
+        max_length=200,
+        blank=True
+    )
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
+        return f'/parser/search/'
 
 class News(models.Model):
     domain = models.CharField(max_length=200)
@@ -16,9 +22,3 @@ class News(models.Model):
     txt = models.CharField(max_length=200, null=True)
 
 
-class Url(models.Model):
-    link = models.URLField(
-        _("Trip Number"),
-        max_length=128,
-        blank=True
-    )
