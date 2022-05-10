@@ -17,12 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import HomePageView
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomePageView.as_view(), name='home'), # homepage
+    # path('', HomePageView.as_view(), name='home'), # homepage
     path('pages/', include('django.contrib.flatpages.urls')),
     path('parser/', include('parser.urls')),
 ]

@@ -2,34 +2,104 @@
 {% load static %}
 
 {% block content %}
-
+<form method="GET">
+    {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
 <div class="row">
     <table>
-        <tbody>
-            {% for a in articles %}
             <tr>
+
                 <td>
-                    <a href="{{ a.link }}">{{ a.domain }}</a>
+                    Domain
                 </td>
                 <td>
-                    <p>
-                        Source: {{ a.country }}
-                    </p>
+                    Create date
                 </td>
                 <td>
-                    <p>
-                        Published: {{ a.created_date }}
-                    </p>
+                    Update_date
                 </td>
                 <td>
-                    <p>
-                        Scraped: {{ a.update_date }}
-                    </p>
+                    Country
+                </td>
+                <td>
+                    Is dead
+                </td>
+                <td>
+                    A
+                </td>
+                <td>
+                    NS
+                </td>
+                <td>
+                    CNAME
+                </td>
+                <td>
+                    MX
+                </td>
+                <td>
+                    txt
+                </td>
+            </tr>
+            {% for a in articles %}
+        <tr>
+
+                <td>
+            {{ a.domain }}
+                </td>
+                <td>
+            {{ a.create_date |date:'M d Y' }}
+                </td>
+                <td>
+            {{ a.update_date |date:'M d Y' }}
+                </td>
+                <td>
+            {{ a.country }}
+                </td>
+                <td>
+            {{ a.is_dead }}
+                </td>
+                <td>
+
+            {{ a.a }}
+                </td>
+                <td>
+            {{ a.ns }}
+                </td>
+                <td>
+            {{ a.cname }}
+                </td>
+                <td>
+            {{ a.mx }}
+                </td>
+                <td>
+            {{ a.txt }}
                 </td>
             </tr>
             {% endfor %}
-        </tbody>
-    </table>
+        </table>
 </div>
+{% if is_paginated %}
 
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+{% endif %}
 {% endblock content %}

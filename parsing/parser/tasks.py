@@ -5,31 +5,72 @@ import json
 from celery import shared_task
 from .models import News
 
+@shared_task(serializer='json')
+def save_function(article_list):
+    print('starting')
+    new_count = 0
+
+    for article in article_list:
+        try:
+            print(article)
+            print(type(article))
+            News.objects.create(
+                link=article['link'],
+                domain=article['domain'],
+                create_date=article['create_date'],
+                update_date = article['update_date'],
+                country = article['country'],
+                is_dead = article['is_dead'],
+                a = article['a'],
+                ns = article['ns'],
+                cname = article['cname'],
+                mx = article['mx'],
+                txt = article['txt']
+            )
+            new_count += 1
+        except Exception as e:
+            print('failed at latest_article is none')
+            print(e)
+            break
+    return print('finished')
+
 @shared_task
 def hackernews_rss():
-    url_links = ['https://yandex.ru', 'https://www.djangoproject.com', 'https://www.python.org']
+    url_links = ['https://yandex.ru']
     article_list = []
     try:
         for url in url_links:
             print('Starting the Scrapping tool')
             # r = requests.get(f'https://api.domainsdb.info/v1/domains/search?domain={url}')
+            print(1)
             r = requests.get(url)
+            print(2)
             soup = BeautifulSoup(r.content, features='lxml')
-            container = soup.findAll('a')
+            print(3)
+            container = soup.select('a')
+            print(4)
             url_storage = []
             for block in container:
                 try:
-                    url = block.get('href')
-                    if url.startswith('http'):
-                        url_storage.append(block.get('href'))
+                    print(5)
+                    url1 = block.get('href')
+                    print(url1)
+                    print(6)
+                    if url1.startswith('http'):
+                        url_storage.append(url1)
                 except:
                     continue
             # "найденный url", "domain", "create_date", "update_date", "country", "isDead", "A", "NS", "CNAME", "MX", "TXT"
             for link in url_storage:
+                print(7)
                 r = requests.get(f'https://api.domainsdb.info/v1/domains/search?domain={link}')
+                print(8)
                 data = r.text
+                print(9)
                 parse_json = json.loads(data)
+                print(10)
                 for block in parse_json['domains']:
+                    
                     domain = block['domain']
                     create_date = block['create_date']
                     update_date = block['update_date']
@@ -53,6 +94,7 @@ def hackernews_rss():
                         'mx': mx,
                         'txt': txt
                     }
+                    print(article)
                     article_list.append(article)
                 print('Finished scraping the articles')
 
@@ -63,28 +105,3 @@ def hackernews_rss():
         print(e)
 
 
-@shared_task(serializer='json')
-def save_function(article_list):
-    print('starting')
-    new_count = 0
-
-    for article in article_list:
-        try:
-            News.objects.create(
-                domain=article['domain'],
-                create_date = article['create_date'],
-                update_date = article['update_date'],
-                country = article['country'],
-                is_dead = article['isDead'],
-                a = article['A'],
-                ns = article['NS'],
-                cname = article['CNAME'],
-                mx = article['MX'],
-                txt = article['txt'],
-            )
-            new_count += 1
-        except Exception as e:
-            print('failed at latest_article is none')
-            print(e)
-            break
-    return print('finished')
