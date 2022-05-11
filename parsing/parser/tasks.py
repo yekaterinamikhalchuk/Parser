@@ -26,7 +26,8 @@ def save_function(article_list):
                 ns=article['ns'],
                 cname=article['cname'],
                 mx=article['mx'],
-                txt=article['txt']
+                txt=article['txt'],
+                link_id = article['link_id']
             )
             new_count += 1
         except Exception as e:
@@ -37,7 +38,8 @@ def save_function(article_list):
 
 
 @shared_task
-def hackernews_rss(url):
+def hackernews_rss(url, instance):
+
     article_list = []
     try:
         
@@ -86,7 +88,8 @@ def hackernews_rss(url):
                     'ns': ns,
                     'cname': cname,
                     'mx': mx,
-                    'txt': txt
+                    'txt': txt,
+                    'link_id': url_id
                 }
                 print(article)
                 article_list.append(article)

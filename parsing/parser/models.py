@@ -1,12 +1,19 @@
 from django.db import models
 
 class Url(models.Model):
-    link = models.URLField(
+    link = models.CharField(
         max_length=200,
         blank=True
     )
     def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
         return f'/parser/search/'
+
+    def __str__(self):
+        return f'{self.link}'
+
+    def to_json(self):
+        return f'{self.link}'
+
 
 class News(models.Model):
     domain = models.CharField(max_length=200)
